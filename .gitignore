@@ -1,2 +1,3 @@
 tutorials/*
 cmake-build-debug/*
+/tutorials/
