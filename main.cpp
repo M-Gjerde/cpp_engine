@@ -2,6 +2,7 @@
 #include<iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
+
 #include "common/stb_image.h"
 
 
@@ -17,6 +18,8 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 
 float i = 0;
+int SCR_WIDTH = 600;
+int SCR_HEIGHT = 800;
 
 int main(void) {
     glfwInit();
@@ -55,6 +58,49 @@ int main(void) {
     Shader firstShader("../vertex.vs", "../fragment.fs");
     Shader secondShader("../vertex.vs", "../fragmentDup.fs");
 
+    float vertices_cube[] = {
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
+    };
 
     float vertices[] = {
             // positions          // colors           // texture coords
@@ -68,11 +114,25 @@ int main(void) {
             1, 2, 3,  // second triangle
             0, 2, 3 // third
     };
+
+    glm::vec3 cubePositions[] = {
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(2.0f, 5.0f, -15.0f),
+            glm::vec3(-1.5f, -2.2f, -2.5f),
+            glm::vec3(-3.8f, -2.0f, -12.3f),
+            glm::vec3(2.4f, -0.4f, -3.5f),
+            glm::vec3(-1.7f, 3.0f, -7.5f),
+            glm::vec3(1.3f, -2.0f, -2.5f),
+            glm::vec3(1.5f, 2.0f, -2.5f),
+            glm::vec3(1.5f, 0.2f, -1.5f),
+            glm::vec3(-1.3f, 1.0f, -1.5f)
+    };
+
+
     unsigned int VBO[2], VAO[2], EBO[2];
     glGenVertexArrays(1, &VAO[0]);
     glGenBuffers(1, &VBO[0]);
     glGenBuffers(1, &EBO[0]);
-
     glBindVertexArray(VAO[0]);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
@@ -91,6 +151,16 @@ int main(void) {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
+    glGenVertexArrays(1, &VAO[1]);
+    glGenBuffers(1, &VBO[1]);
+    glBindVertexArray(VAO[1]);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_cube), vertices_cube, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     //////////////////    Texture loading       //////////////////////////////
     // load and create a texture
@@ -144,21 +214,17 @@ int main(void) {
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     secondShader.use(); // don't forget to activate/use the shader before setting uniforms!
-   // or set it via the texture class
+    // or set it via the texture class
     secondShader.setInt("texture2", 1);
 
     /////////////// TRANSFORMS /////////////////
-    glm::mat4 trans = glm::mat4(1.0f);
-    //trans = glm::rotate(trans, glm::radians(-90.0f), glm::vec3(0.0, 0.0, 1.0));
-    //trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
-
-    unsigned int transformLoc = glGetUniformLocation(secondShader.ID, "transform");
-
 
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+
         //....//
 
         // bind Texture
@@ -167,24 +233,59 @@ int main(void) {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
-        //Transform each frame
-        trans = glm::mat4(1.0f);
-        //trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-        //trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
+// create transformations
+/*
+        glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
+        model = glm::rotate(model, glm::radians(-8.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+        projection = glm::perspective(glm::radians(45.0f), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
+        // retrieve the matrix uniform locations
+        unsigned int modelLoc = glGetUniformLocation(secondShader.ID, "model");
+        unsigned int viewLoc = glGetUniformLocation(secondShader.ID, "view");
+        // pass them to the shaders (3 different ways)
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
+        // note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
+        secondShader.setMat4("projection", projection);
         // render container
-        secondShader.use();
-        glBindVertexArray(VAO[0]);
-        glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+        //glBindVertexArray(VAO[0]);
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+*/
+        //Cube
+
+        glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
+        glm::mat4 trans = glm::mat4(1.0f);
+
+        //model = glm::rotate(model, glm::radians(-8.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, i-2));
+        projection = glm::perspective(glm::radians(45.0f), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f, 100.0f);
+
+        secondShader.setMat4("transform", trans);
+        secondShader.setMat4("model", model);
+        secondShader.setMat4("view", view);
+        secondShader.setMat4("projection", projection);
+
+        glBindVertexArray(VAO[1]);
+        for (unsigned int j = 0; j < 10; j++) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[j]);
+            if (j % 3 == 0) {
+                model = glm::rotate(model, (float) glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+            } else {
+                float angle = 20.0f * j;
+                model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            }
+            secondShader.setMat4("model", model);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
         secondShader.setFloat("ourColor", i);
-
-        trans = glm::mat4(1.0f);
-        trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
-        trans = glm::scale(trans, glm::vec3(1, 1, 1) * (float)glfwGetTime());
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 
         glfwSwapBuffers(window);
         glfwPollEvents();

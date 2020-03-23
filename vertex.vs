@@ -8,6 +8,10 @@ out vec4 vertexColor; // specify a color output to the fragment shader
 out vec3 ourColor;
 out vec3 vertPos;
 
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
 uniform mat4 transform;
 
 void main()
@@ -16,6 +20,6 @@ void main()
     ourColor = aColor;
     vertPos = aPos;
     texCoord = aTextCoord;
-    gl_Position = transform * vec4(aPos, 1.0f);
+    gl_Position = projection * view * model * vec4(aPos, 1.0) * transform;
 
 }
