@@ -20,6 +20,6 @@ void main()
     ourColor = aColor;
     vertPos = aPos;
     texCoord = aTextCoord;
-    gl_Position = projection * view * model * vec4(aPos, 1.0) * transform;
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
 
 }

@@ -10,7 +10,7 @@ add_subdirectory(include/glm-0.9.7.1)
 
 
 ## main file
-add_executable(cpp_engine main.cpp common/shader.h common/shader.cpp )
+add_executable(cpp_engine main.cpp common/shader.h common/shader.cpp common/Camera.h common/Objects.h)
 
 target_link_libraries(cpp_engine PRIVATE
         glfw
@@ -21,3 +21,14 @@ target_link_libraries(cpp_engine PRIVATE
 target_include_directories(cpp_engine PRIVATE
         include/glad/include
      )
+
+add_executable(cpp_light_engine lightning.cpp common/shader.cpp common/Camera.h common/Objects.h)
+target_link_libraries(cpp_light_engine PRIVATE
+        glfw
+        glad
+        glm
+        )
+
+target_include_directories(cpp_light_engine PRIVATE
+        include/glad/include
+        )
