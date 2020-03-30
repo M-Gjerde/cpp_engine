@@ -80,14 +80,39 @@ int main(void) {
 
     //Load objects from helper file
     Objects objects;
-
-    unsigned int VAO, VBO;
+    objects.generateCube();
+    objects.cubeIndices();
+    unsigned int VAO, VBO, EBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
     glBindVertexArray(VAO);
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(objects.vertices), objects.vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
+    glBufferData(GL_ARRAY_BUFFER, objects.vertices.size() * sizeof(objects.vertices), &objects.vertices[0], GL_STATIC_DRAW);
+
+    // 3. copy our index array in a element buffer for OpenGL to use
+
+    //unsigned short indices[]={0, 1, 2, 2, 3, 0};
+    std::vector<GLushort> indices;
+
+    indices.push_back(0);
+    indices.push_back(1);
+    indices.push_back(2);
+
+    indices.push_back(2);
+    indices.push_back(3);
+    indices.push_back(0);
+
+    std::cout << objects.vertices[0].x << std::endl;
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+            indices.size() * sizeof(GLushort),
+            &indices[0],
+            GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
     unsigned int lightVAO, lightVBO;
@@ -95,33 +120,13 @@ int main(void) {
     glGenBuffers(1, &lightVBO);
     glBindVertexArray(lightVAO);
     glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(objects.vertices), objects.vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, objects.vertices.size() * 3 * sizeof(float), &objects.vertices[0], GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     //Calculate normal vectors from cube vertices
 
 
-
-    std::cout << sizeof(objects.vertices) << std::endl;
-    for (int i = 0; i < 180; ++i) {
-        if (i % 5 == 0 && i % 30 == 0) {
-            std::cout << "loop no: " << i << std::endl;
-
-            glm::vec3 p1(objects.vertices[0 + i], objects.vertices[1+ i], objects.vertices[2 + i]);
-            glm::vec3 p2(objects.vertices[5 + i], objects.vertices[6 + i], objects.vertices[7 + i]);
-            glm::vec3 p3(objects.vertices[10 + i], objects.vertices[11 + i], objects.vertices[12 + i]);
-
-
-
-            glm::vec3 V1 = p1 - p2;
-            glm::vec3 V2 = p1 - p3;
-
-            glm::vec3 normal = glm::cross(V1, V2);
-            normal = glm::normalize(normal);
-            std::cout << normal.x << " " << normal.y << " " << normal.z << " " << std::endl;
-        }
-    }
 
 
     while (!glfwWindowShouldClose(window)) {
@@ -147,7 +152,7 @@ int main(void) {
                                         100.0f));
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 
         light_shader.use();
         glm::mat4 lightModel = glm::mat4(1.0f);
@@ -160,7 +165,7 @@ int main(void) {
                                               100.0f));
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_TRIANGLES, 0, objects.vertices.size());
 
         shader.use();
         lightModel = glm::mat4(1.0f);
@@ -173,7 +178,7 @@ int main(void) {
                                         100.0f));
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_TRIANGLES, 0, objects.vertices.size());
 
 
         glfwSwapBuffers(window);
