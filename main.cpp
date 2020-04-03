@@ -72,8 +72,7 @@ int main(void) {
     //Vertices and shader programming
 
 
-    Shader firstShader("../vertex.vs", "../fragment.fs");
-    Shader secondShader("../vertex.vs", "../fragmentDup.fs");
+    Shader secondShader("../shaders/ol/vertex.vs", "../shaders/ol/fragmentDup.fs");
 
     float vertices_cube[] = {
             -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,

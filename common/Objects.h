@@ -21,12 +21,14 @@ public:
     std::vector<Vertex> vertices;
     std::vector<int> indices;
 
+
     void cubeIndices();
 };
 
 
-Objects::Objects() {}
+Objects::Objects(){
 
+}
 
 void Objects::generateCube() {
     int j = 0;
@@ -86,5 +88,7 @@ void Objects::cubeIndices(){
     indices.push_back(3);
 
 }
+
+
 
 #endif //CPP_ENGINE_OBJECTS_H

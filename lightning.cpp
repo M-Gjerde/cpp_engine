@@ -78,6 +78,50 @@ int main(void) {
     //LightCubeShader
     Shader light_shader("../shaders/light_vertex.shader", "../shaders/fragment.shader");
 
+    float vertices[] = {
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+            0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+            0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+    };
+
     //Load objects from helper file
     Objects objects;
     objects.generateCube();
@@ -89,45 +133,26 @@ int main(void) {
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, objects.vertices.size() * sizeof(objects.vertices), &objects.vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // 3. copy our index array in a element buffer for OpenGL to use
-
-    //unsigned short indices[]={0, 1, 2, 2, 3, 0};
-    std::vector<GLushort> indices;
-
-    indices.push_back(0);
-    indices.push_back(1);
-    indices.push_back(2);
-
-    indices.push_back(2);
-    indices.push_back(3);
-    indices.push_back(0);
-
-    std::cout << objects.vertices[0].x << std::endl;
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-            indices.size() * sizeof(GLushort),
-            &indices[0],
-            GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
-    unsigned int lightVAO, lightVBO;
-    glGenVertexArrays(1, &lightVAO);
-    glGenBuffers(1, &lightVBO);
-    glBindVertexArray(lightVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, lightVBO);
-    glBufferData(GL_ARRAY_BUFFER, objects.vertices.size() * 3 * sizeof(float), &objects.vertices[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    //Calculate normal vectors from cube vertices
+    unsigned int lightVAO;
+    glGenVertexArrays(1, &lightVAO);
+    glBindVertexArray(lightVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // note that we update the lamp's position attribute's stride to reflect the updated buffer data
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
 
 
-
+    shader.use();
+    glm::vec3 lightPos(5.0f, 0, 5.0f);
 
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
@@ -135,56 +160,56 @@ int main(void) {
         lastFrame = currentFrame;
 
         processInput(window);
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
 
 
         shader.use();
-        glm::vec3 objectColor = glm::vec3(1.0f, 0.5f, 0.31f);
-        glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-        shader.setVec3("objectColor", objectColor);
-        shader.setVec3("lightColor", lightColor);
-        shader.setMat4("model", glm::mat4(1.0f));
-        shader.setMat4("view", camera.getViewMatrix());
-        shader.setMat4("projection",
-                       glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f,
-                                        100.0f));
+        shader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
+        shader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader.setVec3("lightPos", lightPos);
+        shader.setVec3("viewPos", camera.Position);
 
+
+        // view/projection transformations
+        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 view = camera.getViewMatrix();
+        shader.setMat4("projection", projection);
+        shader.setMat4("view", view);
+
+        // world transformation
+        glm::mat4 model = glm::mat4(1.0f);
+        shader.setMat4("model", model);
+
+        // render the cube
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
+        float speed = 0.2;
+        float radius = 8;
+        // also draw the lamp object
+        lightPos = glm::vec3(sin(glfwGetTime() * speed) * radius, 0.0f, cos(glfwGetTime() * speed) * radius);
         light_shader.use();
-        glm::mat4 lightModel = glm::mat4(1.0f);
-        lightModel = glm::translate(lightModel, glm::vec3(-5.0f, 0.0f, -5.0f));
-        lightModel = glm::scale(lightModel, glm::vec3(0.2f));
-        light_shader.setMat4("model", lightModel);
-        light_shader.setMat4("view", camera.getViewMatrix());
-        light_shader.setMat4("projection",
-                             glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f,
-                                              100.0f));
+        light_shader.setMat4("projection", projection);
+        light_shader.setMat4("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+        light_shader.setMat4("model", model);
 
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, objects.vertices.size());
-
-        shader.use();
-        lightModel = glm::mat4(1.0f);
-        lightModel = glm::translate(lightModel, glm::vec3(-3.5f, 0.0f, -3.5f));
-        lightModel = glm::scale(lightModel, glm::vec3(0.1f));
-        shader.setMat4("model", lightModel);
-        shader.setMat4("view", camera.getViewMatrix());
-        shader.setMat4("projection",
-                       glm::perspective(glm::radians(camera.Zoom), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f,
-                                        100.0f));
-
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, objects.vertices.size());
+        glBindVertexArray(lightVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
+    // optional: de-allocate all resources once they've outlived their purpose:
+    // ------------------------------------------------------------------------
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteVertexArrays(1, &lightVAO);
+    glDeleteBuffers(1, &VBO);
 }
 
 
